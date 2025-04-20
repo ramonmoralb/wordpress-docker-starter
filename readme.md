@@ -21,8 +21,7 @@ La estructura de archivos de este proyecto es la siguiente:
 Clona este repositorio en tu máquina local:
 
 ```bash
-git clone https://tu-repositorio-url.git
-cd tu-repositorio
+git clone hhttps://github.com/ramonmoralb/wordpress-docker-starter.git
 ```
 
 # Configuración del archivo .env

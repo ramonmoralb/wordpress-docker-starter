@@ -22,11 +22,12 @@ git clone hhttps://github.com/ramonmoralb/wordpress-docker-starter.git
 Antes de iniciar, asegúrate de que tienes un archivo .env en el directorio raíz con la configuración adecuada. Puedes crear uno a partir del ejemplo .env.example (si lo tienes) y configurarlo con los valores correctos. Si no existe este archivo, asegúrate de configurarlo correctamente (lo puedes dejar vacío si no necesitas configuraciones específicas).
 
 Ejemplo de archivo .env:
-
+```bash
 MYSQL_ROOT_PASSWORD=rootp
 MYSQL_DATABASE=wordpress
 MYSQL_USER=user
 MYSQL_PASSWORD=userp
+```
 
 # Personalizar wp-config.php
 

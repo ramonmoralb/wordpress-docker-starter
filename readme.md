@@ -7,13 +7,6 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas en tu
 - [Docker](https://www.docker.com/get-started): Instalar Docker
 - [Docker Compose](https://docs.docker.com/compose/install/): Instalar Docker Compose
 
-**Estructura del Proyecto**
-
-La estructura de archivos de este proyecto es la siguiente:
-
-. ├── app/ │ ├── wp-content/ # Contenido personalizable de WordPress (temas, plugins, etc.) │ ├── wp-config.php # Configuración personalizada de WordPress │ └── wp-admin/ # Ignorado (parte del núcleo de WordPress) ├── docker-compose.yml # Configuración de los servicios Docker ├── init-db.sh # Script para importar la base de datos desde un dump ├── mysql-custom.Dockerfile # Dockerfile personalizado para MySQL ├── mysql-dump # Dump de la base de datos (opcional) └── .gitignore # Archivos y carpetas a ignorar por Git
-
-
 📝 **Configuración inicial**
 
 ### Clonar el repositorio

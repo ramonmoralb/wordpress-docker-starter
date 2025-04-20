@@ -14,7 +14,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas en tu
 Clona este repositorio en tu máquina local:
 
 ```bash
-git clone hhttps://github.com/ramonmoralb/wordpress-docker-starter.git
+git clone https://github.com/ramonmoralb/wordpress-docker-starter.git
 ```
 
 # Configuración del archivo .env
@@ -24,9 +24,13 @@ Antes de iniciar, asegúrate de que tienes un archivo .env en el directorio raí
 Ejemplo de archivo .env:
 ```bash
 MYSQL_ROOT_PASSWORD=rootp
-MYSQL_DATABASE=wordpress
+MYSQL_DATABASE=wordpress_db_name
 MYSQL_USER=user
 MYSQL_PASSWORD=userp
+WORDPRESS_DB_HOST=db:3306
+WORDPRESS_DB_USER=user
+WORDPRESS_DB_PASSWORD=userp
+WORDPRESS_DB_NAME=wordpress_db_name
 ```
 
 # Personalizar wp-config.php

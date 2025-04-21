@@ -33,9 +33,6 @@ WORDPRESS_DB_PASSWORD=userp
 WORDPRESS_DB_NAME=wordpress_db_name
 ```
 
-# Personalizar wp-config.php
-
-Si necesitas personalizar tu archivo wp-config.php, puedes hacerlo directamente en el archivo dentro del directorio app/. Este archivo se sincroniza automáticamente con el contenedor de Docker.
 
 ## Configuración de Docker
 

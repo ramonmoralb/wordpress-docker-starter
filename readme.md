@@ -1,109 +1,162 @@
 # Proyecto WordPress con Docker entorno local
 
-**Requisitos**
+Este proyecto configura un entorno de desarrollo local para WordPress utilizando Docker, con MariaDB como base de datos y PHPMyAdmin para la gestión de la base de datos.
 
-Antes de comenzar, asegúrate de tener instalados los siguientes programas en tu máquina:
+## Requisitos Previos
 
-- [Docker](https://www.docker.com/get-started): Instalar Docker
-- [Docker Compose](https://docs.docker.com/compose/install/): Instalar Docker Compose
+Asegúrate de tener instalado:
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-📝 **Configuración inicial**
+## Estructura del Proyecto
 
-### Clonar el repositorio
-
-Clona este repositorio en tu máquina local:
-
-```bash
-git clone https://github.com/ramonmoralb/wordpress-docker-starter.git
+```
+.
+├── app/
+│   └── wp-content/      # Contenido personalizado de WordPress
+├── docker-compose.yml   # Configuración de servicios Docker
+├── .env                 # Variables de entorno (crear a partir de .env.example)
+├── init-db.sh           # Script de inicialización de la base de datos
+└── mysql-dump/          # Directorio para backups de base de datos
+    └── db.sql          # Archivo SQL para inicialización
 ```
 
-# Configuración del archivo .env
+## Configuración Inicial
 
-Antes de iniciar, asegúrate de que tienes un archivo .env en el directorio raíz con la configuración adecuada. Puedes crear uno a partir del ejemplo .env.example (si lo tienes) y configurarlo con los valores correctos. Si no existe este archivo, asegúrate de configurarlo correctamente (lo puedes dejar vacío si no necesitas configuraciones específicas).
-
-Ejemplo de archivo .env:
+1. Clona el repositorio:
 ```bash
-MYSQL_ROOT_PASSWORD=rootp
+git clone https://github.com/ramonmoralb/wordpress-docker-starter.git
+cd wordpress-docker-starter
+```
+
+2. Crea un archivo `.env` en el directorio raíz con la siguiente configuración:
+```env
+MYSQL_ROOT_PASSWORD=your_root_password
 MYSQL_DATABASE=wordpress_db_name
-MYSQL_USER=user
-MYSQL_PASSWORD=userp
+MYSQL_USER=your_db_user
+MYSQL_PASSWORD=your_db_password
 WORDPRESS_DB_HOST=db:3306
-WORDPRESS_DB_USER=user
-WORDPRESS_DB_PASSWORD=userp
+WORDPRESS_DB_USER=your_db_user
+WORDPRESS_DB_PASSWORD=your_db_password
 WORDPRESS_DB_NAME=wordpress_db_name
 ```
 
+## Servicios Disponibles
 
-## Configuración de Docker
+El proyecto incluye los siguientes servicios:
 
-El proyecto está configurado para ser ejecutado con Docker Compose. Esto significa que puedes iniciar todos los servicios necesarios (base de datos, WordPress, y PHPMyAdmin) con un solo comando.
-Iniciar el entorno de desarrollo
+1. **WordPress**
+   - URL: http://localhost:8000
+   - Imagen: wordpress:latest
+   - Volumen montado: ./app/wp-content
 
-**Inicia los contenedores de Docker:**
+2. **Base de Datos MariaDB**
+   - Contenedor: mysql_db
+   - Volumen persistente para datos
+   - Puerto: 3306
+   - Inicialización mediante init-db.sh
+
+3. **PHPMyAdmin**
+   - URL: http://localhost:8080
+   - Credenciales por defecto:
+     - Servidor: db
+     - Usuario: root
+     - Contraseña: (la definida en MYSQL_ROOT_PASSWORD)
+
+## Gestión de la Base de Datos
+
+### Inicialización de la Base de Datos
+
+El proyecto incluye un script de inicialización (`init-db.sh`) que se encarga de:
+
+1. Verificar la existencia del archivo `mysql-dump/db.sql`
+2. Iniciar el contenedor de la base de datos
+3. Importar automáticamente el dump si existe
+
+Para usar el script:
+
+1. Copia tu archivo SQL en `mysql-dump/db.sql`
+2. El script se ejecutará automáticamente al iniciar el contenedor
+3. Si necesitas reiniciar la base de datos:
+   ```bash
+   docker-compose down -v
+   docker-compose up -d
+   ```
+
+### Backup y Restauración
+
+Para hacer un backup de la base de datos:
+```bash
+docker exec mysql_db mysqldump -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} > backup.sql
+```
+
+Para restaurar desde un backup:
+```bash
+docker exec -i mysql_db mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} < backup.sql
+```
+
+## Comandos Principales
+
+### Iniciar el Entorno
 ```bash
 docker-compose up -d
 ```
 
-Este comando levantará los siguientes servicios:
-
-    WordPress: Accesible en http://localhost:8000
-
-    PHPMyAdmin: Accesible en http://localhost:8080 (para gestionar la base de datos)
-
-    MySQL: En segundo plano, manejado por Docker
-
-## Acceder a WordPress
-
-Una vez que los contenedores estén levantados, podrás acceder a tu instalación de WordPress desde http://localhost:8000 y configurarlo como si fuera una instalación nueva.
-
-
-### Importar una base de datos (opcional)
-
-Si tienes un dump de base de datos (db.sql), puedes importarlo a tu contenedor de MySQL utilizando el script `init-db.sh`, que se ejecutará automáticamente al iniciar el contenedor. Esto es útil si tienes una base de datos preexistente que deseas cargar.
-
-1. Copia tu dump en el archivo `db.sql` en el directorio `./mysql-dump` en la  raíz del proyecto.
-
-
-## Detener el entorno de desarrollo
-Cuando termines de trabajar, puedes detener los contenedores de Docker con:
+### Detener el Entorno
 ```bash
 docker-compose down
 ```
-Esto detendrá y eliminará todos los contenedores, pero mantendrá los volúmenes de datos (como la base de datos de MySQL).
 
-## Comandos Útiles
-
-    Ver los contenedores activos:
-```bash
-docker ps
-```
-    Ver los logs de los contenedores:
+### Ver Logs
 ```bash
 docker-compose logs
 ```
-    Acceder al contenedor de MySQL:
 
-```bash
-docker exec -it mysql_db bash
-```
+### Acceder a los Contenedores
 
-    Acceder al contenedor de WordPress:
+Acceso al contenedor de WordPress:
 ```bash
 docker exec -it wordpress_app bash
 ```
 
-    Reiniciar los contenedores:
-
+Acceso al contenedor de MySQL:
 ```bash
-docker-compose restart
+docker exec -it mysql_db bash
 ```
 
-## Limpieza
+## Gestión de Datos
 
-Si deseas eliminar completamente los contenedores, las redes y los volúmenes de Docker (incluida la base de datos y los archivos persistentes), puedes usar:
+### Persistencia
+Los datos se mantienen en:
+- Base de datos: Volumen `db_data`
+- WordPress: Directorio `./app/wp-content`
+- Scripts SQL: Directorio `./mysql-dump`
 
+### Limpieza Total
+Para eliminar todos los datos, incluyendo volúmenes:
 ```bash
 docker-compose down -v
 ```
 
-Este comando eliminará los volúmenes asociados a tu contenedor, por lo que la base de datos y otros datos persistentes también serán eliminados.
+## Acceso a las Aplicaciones
+
+- WordPress: http://localhost:8000
+  - Panel de administración: http://localhost:8000/wp-admin
+
+- PHPMyAdmin: http://localhost:8080
+  - Servidor: db
+  - Usuario: root
+  - Contraseña: (la definida en MYSQL_ROOT_PASSWORD)
+
+## Redes
+
+El proyecto utiliza una red Docker dedicada llamada `wordpress_network` para la comunicación entre contenedores.
+
+## Notas Importantes
+
+1. Los cambios en wp-content persisten en el directorio local `./app/wp-content`
+2. La base de datos se mantiene en un volumen Docker llamado `db_data`
+3. El script `init-db.sh` se encarga de la inicialización de la base de datos
+4. Asegúrate de no compartir las credenciales del archivo `.env` en control de versiones
+5. Para importar una base de datos existente, copia tu dump.sql el archivo SQL en `mysql-dump/db.sql`
+6. Cambia todas las contraseñas por defecto por razones de seguridad

@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: mysql-custom.Dockerfile
     container_name: mysql_db
+    ports:
+      - "3306:3306"
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -20,7 +22,6 @@ services:
     image: wordpress:latest
     depends_on:
       - db
-    restart: always
     container_name: wordpress_app
     ports:
       - "8000:80"
@@ -36,7 +37,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
-    restart: always
     container_name: phpmyadmin_app
     ports:
       - "8080:80"
